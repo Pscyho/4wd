@@ -12,6 +12,7 @@ const int S3= 4;
 const int S4= 5;
 const int S5= 12;
 //*************************************************//
+const int MSpeed=120;
 
 #include <Arduino.h>
 void setup() {
@@ -49,8 +50,8 @@ void loop() {
     // if only middle sensor detects black line
     if ((s1 == 1) && (s2 == 1) && (s3 == 0) && (s4 == 1) && (s5 == 1)) {
         // going forward with full speed
-        analogWrite(EA, 100);  // you can adjust the speed of the motors from 0-100
-        analogWrite(EB, 100);  // you can adjust the speed of the motors from 0-100
+        analogWrite(EA, MSpeed);  // you can adjust the speed of the motors from 0-100
+        analogWrite(EB, MSpeed);  // you can adjust the speed of the motors from 0-100
         digitalWrite(Ln1, HIGH);
         digitalWrite(Ln2, LOW);
         digitalWrite(Ln3, HIGH);
@@ -60,8 +61,8 @@ void loop() {
     // if only left sensor detects black line
     if ((s1 == 1) && (s2 == 0) && (s3 == 1) && (s4 == 1) && (s5 == 1)) {
         // going right with full speed
-        analogWrite(EA, 100);  // you can adjust the speed of the motors from 0-100
-        analogWrite(EB, 100);  // you can adjust the speed of the motors from 0-100
+        analogWrite(EA, MSpeed);  // you can adjust the speed of the motors from 0-100
+        analogWrite(EB, MSpeed);  // you can adjust the speed of the motors from 0-100
         digitalWrite(Ln1, HIGH);
         digitalWrite(Ln2, LOW);
         digitalWrite(Ln3, LOW);
@@ -71,8 +72,8 @@ void loop() {
     // if only left most sensor detects black line
     if ((s1 == 0) && (s2 == 1) && (s3 == 1) && (s4 == 1) && (s5 == 1)) {
         // going right with full speed
-        analogWrite(EA, 100);  // you can adjust the speed of the motors from 0-100
-        analogWrite(EB, 100);  // you can adjust the speed of the motors from 0-100
+        analogWrite(EA, MSpeed);  // you can adjust the speed of the motors from 0-100
+        analogWrite(EB, MSpeed);  // you can adjust the speed of the motors from 0-100
         digitalWrite(Ln1, HIGH);
         digitalWrite(Ln2, LOW);
         digitalWrite(Ln3, LOW);
@@ -82,8 +83,8 @@ void loop() {
     // if only right sensor detects black line
     if ((s1 == 1) && (s2 == 1) && (s3 == 1) && (s4 == 0) && (s5 == 1)) {
         // going left with full speed
-        analogWrite(EA, 100);  // you can adjust the speed of the motors from 0-100
-        analogWrite(EB, 100);  // you can adjust the speed of the motors from 0-100
+        analogWrite(EA, MSpeed);  // you can adjust the speed of the motors from 0-100
+        analogWrite(EB, MSpeed);  // you can adjust the speed of the motors from 0-100
         digitalWrite(Ln1, LOW);
         digitalWrite(Ln2, LOW);
         digitalWrite(Ln3, HIGH);
@@ -93,8 +94,8 @@ void loop() {
     // if only right most sensor detects black line
     if ((s1 == 1) && (s2 == 1) && (s3 == 1) && (s4 == 1) && (s5 == 0)) {
         // going left with full speed
-        analogWrite(EA, 100);  // you can adjust the speed of the motors from 0-100
-        analogWrite(EB, 100);  // you can adjust the speed of the motors from 0-100
+        analogWrite(EA, MSpeed);  // you can adjust the speed of the motors from 0-100
+        analogWrite(EB, MSpeed);  // you can adjust the speed of the motors from 0-100
         digitalWrite(Ln1, LOW);
         digitalWrite(Ln2, HIGH);
         digitalWrite(Ln3, HIGH);
@@ -104,8 +105,8 @@ void loop() {
     // if middle and right sensor detects black line
     if ((s1 == 1) && (s2 == 1) && (s3 == 0) && (s4 == 0) && (s5 == 1)) {
         // going left with full speed
-        analogWrite(EA, 100);  // you can adjust the speed of the motors from 0-100
-        analogWrite(EB, 100);  // you can adjust the speed of the motors from 0-100
+        analogWrite(EA, MSpeed);  // you can adjust the speed of the motors from 0-100
+        analogWrite(EB, MSpeed);  // you can adjust the speed of the motors from 0-100
         digitalWrite(Ln1, LOW);
         digitalWrite(Ln2, LOW);
         digitalWrite(Ln3, HIGH);
@@ -115,8 +116,8 @@ void loop() {
     // if middle and left sensor detects black line
     if ((s1 == 1) && (s2 == 0) && (s3 == 0) && (s4 == 1) && (s5 == 1)) {
         // going right with full speed
-        analogWrite(EA, 100);  // you can adjust the speed of the motors from 0-100
-        analogWrite(EB, 100);  // you can adjust the speed of the motors from 0-100
+        analogWrite(EA, MSpeed);  // you can adjust the speed of the motors from 0-100
+        analogWrite(EB, MSpeed);  // you can adjust the speed of the motors from 0-100
         digitalWrite(Ln1, HIGH);
         digitalWrite(Ln2, LOW);
         digitalWrite(Ln3, LOW);
@@ -126,8 +127,8 @@ void loop() {
     // if middle, left and left most sensor detects black line
     if ((s1 == 0) && (s2 == 0) && (s3 == 0) && (s4 == 1) && (s5 == 1)) {
         // going right with full speed
-        analogWrite(EA, 100);  // you can adjust the speed of the motors from 0-100
-        analogWrite(EB, 100);  // you can adjust the speed of the motors from 0-100
+        analogWrite(EA, MSpeed);  // you can adjust the speed of the motors from 0-100
+        analogWrite(EB, MSpeed);  // you can adjust the speed of the motors from 0-100
         digitalWrite(Ln1, HIGH);
         digitalWrite(Ln2, LOW);
         digitalWrite(Ln3, LOW);
@@ -137,8 +138,8 @@ void loop() {
     // if middle, right and right most sensor detects black line
     if ((s1 == 1) && (s2 == 1) && (s3 == 0) && (s4 == 0) && (s5 == 0)) {
         // going left with full speed
-        analogWrite(EA, 100);  // you can adjust the speed of the motors from 0-100
-        analogWrite(EB, 100);  // you can adjust the speed of the motors from 0-100
+        analogWrite(EA, MSpeed);  // you can adjust the speed of the motors from 0-100
+        analogWrite(EB, MSpeed);  // you can adjust the speed of the motors from 0-100
         digitalWrite(Ln1, LOW);
         digitalWrite(Ln2, LOW);
         digitalWrite(Ln3, HIGH);

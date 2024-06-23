@@ -8,10 +8,14 @@ const int enB = 11;
 
 const int L_S = 13;
 const int R_S = 12;
-int M1_Speed = 70;             // speed of motor 1
-int M2_Speed = 70;             // speed of motor 2
-int LeftRotationSpeed = 100;   // Left Rotation Speed
-int RightRotationSpeed = 100;  // Right Rotation Speed
+int M1_Speed = 110;           // speed of motor 1
+int M2_Speed = 110;           // speed of motor 2
+int LeftRotationSpeed = 90;   // Left Rotation Speed
+int RightRotationSpeed = 90;  // Right Rotation Speed
+int Lspeed = 60;
+int Rspeed = 60;
+float kLeft = 0.1;
+float kRight = 0.1;
 
 #include <Arduino.h>
 void setup() {
@@ -32,25 +36,51 @@ void loop() {
     int LEFT_SENSOR = digitalRead(L_S);
     int RIGHT_SENSOR = digitalRead(R_S);
 
-    if (RIGHT_SENSOR == 0 && LEFT_SENSOR == 0) {
-        Serial.println("forward");
-        forward();  // FORWARD
+    int state;
+
+    if (LEFT_SENSOR && RIGHT_SENSOR) {
+        state = 0;  // stop state
+    } else if (LEFT_SENSOR && !RIGHT_SENSOR) {
+        state = 1;  // turn left state
+    } else if (!LEFT_SENSOR && RIGHT_SENSOR) {
+        state = 2;  // turn right state
+    } else if (!LEFT_SENSOR && !RIGHT_SENSOR) {
+        state = 3;  // go state
+    }
+    int startTime = millis();
+
+    switch (state) {
+        case 0:
+            analogWrite(enA, 0);
+            analogWrite(enB, 0);
+            break;
+        case 1:
+            while (digitalRead(L_S)) {
+                int RnewSpeed = Rspeed + kRight * (millis() - startTime);
+                analogWrite(enA, RnewSpeed);
+                int LnewSpeed = Lspeed - kLeft * (millis() - startTime);
+                analogWrite(enB, LnewSpeed);
+            }
+            break;
+        case 2:
+            while (digitalRead(R_S)) {
+                int RnewSpeed = Rspeed + kRight * (millis() - startTime);
+                analogWrite(enA, RnewSpeed);
+                int LnewSpeed = Lspeed - kLeft * (millis() - startTime);
+                analogWrite(enB, LnewSpeed);
+            }
+            break;
+        case 3:  // go
+
+            analogWrite(enA, Rspeed);
+            analogWrite(enB, Lspeed);
+
+            break;
+        default:  // stop
+
+            break;
     }
 
-    else if (RIGHT_SENSOR == 0 && LEFT_SENSOR == 1) {
-        Serial.println("right");
-        right();  // Move Right
-    }
-
-    else if (RIGHT_SENSOR == 1 && LEFT_SENSOR == 0) {
-        Serial.println("left");
-        left();  // Move Left
-    }
-
-    else if (RIGHT_SENSOR == 1 && LEFT_SENSOR == 1) {
-        Serial.println("Stop");
-        Stop();  // STOP
-    }
 }
 
 void forward() {
