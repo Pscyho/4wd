@@ -10,10 +10,8 @@ const int L_S = 13;
 const int R_S = 12;
 int M1_Speed = 110;           // speed of motor 1
 int M2_Speed = 110;           // speed of motor 2
-int LeftRotationSpeed = 90;   // Left Rotation Speed
-int RightRotationSpeed = 90;  // Right Rotation Speed
-int Lspeed = 60;
-int Rspeed = 60;
+int Lspeed = 100;
+int Rspeed = 10;
 float kLeft = 0.1;
 float kRight = 0.1;
 
@@ -40,12 +38,16 @@ void loop() {
 
     if (LEFT_SENSOR && RIGHT_SENSOR) {
         state = 0;  // stop state
+        Stop();
     } else if (LEFT_SENSOR && !RIGHT_SENSOR) {
         state = 1;  // turn left state
+        right();
     } else if (!LEFT_SENSOR && RIGHT_SENSOR) {
         state = 2;  // turn right state
+        left();
     } else if (!LEFT_SENSOR && !RIGHT_SENSOR) {
         state = 3;  // go state
+        forward();
     }
     int startTime = millis();
 
@@ -76,7 +78,7 @@ void loop() {
             analogWrite(enB, Lspeed);
 
             break;
-        default:  // stop
+        default: 
 
             break;
     }
@@ -88,9 +90,6 @@ void forward() {
     digitalWrite(in2, LOW);
     digitalWrite(in3, HIGH);
     digitalWrite(in4, LOW);
-
-    analogWrite(enA, M1_Speed);
-    analogWrite(enB, M2_Speed);
 }
 void backward() {
     digitalWrite(in1, LOW);
@@ -98,8 +97,6 @@ void backward() {
     digitalWrite(in3, LOW);
     digitalWrite(in4, HIGH);
 
-    analogWrite(enA, M1_Speed);
-    analogWrite(enB, M2_Speed);
 }
 
 void right() {
@@ -107,9 +104,6 @@ void right() {
     digitalWrite(in2, HIGH);
     digitalWrite(in3, HIGH);
     digitalWrite(in4, LOW);
-
-    analogWrite(enA, LeftRotationSpeed);
-    analogWrite(enB, RightRotationSpeed);
 }
 
 void left() {
@@ -118,8 +112,6 @@ void left() {
     digitalWrite(in3, LOW);
     digitalWrite(in4, HIGH);
 
-    analogWrite(enA, LeftRotationSpeed);
-    analogWrite(enB, RightRotationSpeed);
 }
 
 void Stop() {
