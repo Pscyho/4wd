@@ -1,18 +1,20 @@
 #include <Arduino.h>
 #include <L298N.h>
 
+#define DEBUG false
+
 // IR Sensor pins
 const int L_IR = A3;  // left IR sensor pin
-const int R_IR = A5;   // right IR sensor pin
+const int R_IR = A5;  // right IR sensor pin
 const int M_IR = A4;  // mid IR sensor pin
 
 // Buzzer pins
 const int BUZER = 6;
 
 // LED pins
-const int R_LED = A0;  // red led pin
-const int B_LED = A1;  // blue led pin
-const int G_LED = A2;  // green led pin
+const int R_LED = 11;  // red led pin
+const int B_LED = 10;  // blue led pin
+const int G_LED = 9;   // green led pin
 
 // UV pins
 const int ECHO = 12;
@@ -39,6 +41,40 @@ int r_count = 0;
 int b_count = 0;
 int g_count = 0;
 
+enum LED {
+    R,
+    G,
+    B,
+    OFF
+};
+
+void set_led(LED l);
+void set_led(LED l) {
+    switch (l) {
+        case R:
+            digitalWrite(R_LED, LOW);
+            digitalWrite(G_LED, HIGH);
+            digitalWrite(B_LED, HIGH);
+            break;
+        case G:
+            digitalWrite(R_LED, HIGH);
+            digitalWrite(G_LED, LOW);
+            digitalWrite(B_LED, HIGH);
+            break;
+        case B:
+            digitalWrite(R_LED, HIGH);
+            digitalWrite(G_LED, HIGH);
+            digitalWrite(B_LED, LOW);
+            break;
+        case OFF:
+            digitalWrite(R_LED, HIGH);
+            digitalWrite(G_LED, HIGH);
+            digitalWrite(B_LED, HIGH);
+            break;
+        default:
+            break;
+    }
+}
 void get_distance() {
     digitalWrite(TRIG, LOW);
     delayMicroseconds(2);
@@ -56,20 +92,19 @@ void get_distance() {
 void get_block() {
     // for blue c
     if (distance <= 10) {
-        digitalWrite(B_LED, LOW);
+        set_led(B);
+        Serial.println("blue");
         b_count += 1;
     } else if (distance <= 13) {  // for green b
-        digitalWrite(G_LED, LOW);
+        set_led(G);
+        Serial.println("green");
         g_count += 1;
-
     } else if (distance <= 16) {  // for red
-        digitalWrite(R_LED, LOW);
+        set_led(R);
+        Serial.println("red");
         r_count += 1;
-
     } else {  // vacant
-        digitalWrite(R_LED, HIGH);
-        digitalWrite(G_LED, HIGH);
-        digitalWrite(B_LED, HIGH);
+        set_led(OFF);
         analogWrite(BUZER, 0);
         delay(500);
         analogWrite(BUZER, 255);
@@ -106,19 +141,21 @@ void move_bot() {
     } else if (LeftVal == 1 && MidVal == 1 && RightVal == 1) {
         bot_stop();
         Serial.println("stop");
+        get_distance();
+        get_block();
     } else if (LeftVal == 0 && MidVal == 0 && RightVal == 1) {
-        bot_left();
+        bot_right();
         // todo speed
         Serial.println("slight left");
     } else if (LeftVal == 1 && MidVal == 0 && RightVal == 0) {
-        bot_right();
+        bot_left();
         // todo speed
         Serial.println("slight right");
     } else if (LeftVal == 0 && MidVal == 1 && RightVal == 1) {
-        bot_left();
+        bot_right();
         Serial.println("left");
     } else if (LeftVal == 1 && MidVal == 1 && RightVal == 0) {
-        bot_right();
+        bot_left();
 
         Serial.println("right");
     }
@@ -143,10 +180,11 @@ enum Tables {
 };
 
 void setup() {
-    // Used to display information
+// Used to display information
+#ifdef DEBUG
     Serial.begin(9600);
-
-    // IR related pinmodes
+#endif
+    // IR related   pinmodes
     pinMode(L_IR, INPUT);
     pinMode(R_IR, INPUT);
     pinMode(M_IR, INPUT);
@@ -162,6 +200,10 @@ void setup() {
     pinMode(R_LED, OUTPUT);
     pinMode(B_LED, OUTPUT);
     pinMode(G_LED, OUTPUT);
+
+    digitalWrite(R_LED, HIGH);
+    digitalWrite(G_LED, HIGH);
+    digitalWrite(B_LED, HIGH);
 
     L_Motor.setSpeed(MOTOR_SPEED);
     R_Motor.setSpeed(MOTOR_SPEED);
@@ -198,12 +240,9 @@ void bot_left() {
     R_Motor.forward();
 }
 void loop() {
-    delay(500);
+    // delay(500);
     // Reset buzzer and led
     analogWrite(BUZER, 0);
-    digitalWrite(A0, !LOW);
-    digitalWrite(A1, !LOW);
-    digitalWrite(A2, !LOW);
 
     int LeftVal = digitalRead(L_IR);
     int MidVal = digitalRead(M_IR);
@@ -223,10 +262,7 @@ void loop() {
     Serial.println(RightVal ? "W" : "B");
 
     Serial.println();
-
     move_bot();
-    get_distance();
-    get_block();
 }
 // void loop() {
 // delay(500);
