@@ -7,7 +7,7 @@ const int R_IR = 9;   // right IR sensor pin
 const int M_IR = 10;  // mid IR sensor pin
 
 // Buzzer pins
-const int BUZER = 0;
+const int BUZER = 6;
 
 // LED pins
 const int R_LED = A0;  // red led pin
@@ -57,20 +57,23 @@ void get_block() {
     // for blue c
     if (distance <= 10) {
         digitalWrite(B_LED, LOW);
-        b_count+=1;
+        b_count += 1;
     } else if (distance <= 13) {  // for green b
         digitalWrite(G_LED, LOW);
-        g_count+=1;
+        g_count += 1;
 
     } else if (distance <= 16) {  // for red
         digitalWrite(R_LED, LOW);
-        r_count+=1;
+        r_count += 1;
 
     } else {  // vacant
         digitalWrite(R_LED, HIGH);
         digitalWrite(G_LED, HIGH);
         digitalWrite(B_LED, HIGH);
-        //todo buzzer
+        analogWrite(BUZER, 0);
+        delay(500);
+        analogWrite(BUZER, 255);
+
     }
 }
 
@@ -78,7 +81,6 @@ void move_bot() {
     int LeftVal = digitalRead(L_IR);
     int MidVal = digitalRead(M_IR);
     int RightVal = digitalRead(R_IR);
-
 
     Serial.print(LeftVal);
     Serial.print(MidVal);
@@ -186,6 +188,8 @@ void move() {
 }
 void loop() {
     delay(500);
+        analogWrite(BUZER, 0);
+
     move_bot();
     digitalWrite(A0, !LOW);
     digitalWrite(A1, !LOW);
@@ -201,7 +205,6 @@ void loop() {
 // int Rspeed = 10;
 // float kLeft = 0.1;
 // float kRight = 0.1;
-
 
 // void loop() {
 
