@@ -41,6 +41,8 @@ int r_count = 0;
 int b_count = 0;
 int g_count = 0;
 
+int box_count = 0;
+
 enum LED {
     R,
     G,
@@ -90,8 +92,7 @@ void get_distance() {
     Serial.println(" cm");
 }
 void get_block() {
-    // for blue c
-    if (distance <= 10) {
+    if (distance <= 10) {  // for blue c
         set_led(B);
         Serial.println("blue");
         b_count += 1;
@@ -99,7 +100,7 @@ void get_block() {
         set_led(G);
         Serial.println("green");
         g_count += 1;
-    } else if (distance <= 16) {  // for red
+    } else if (distance <= 16) {  // for red a
         set_led(R);
         Serial.println("red");
         r_count += 1;
@@ -145,12 +146,13 @@ void move_bot() {
         get_block();
     } else if (LeftVal == 0 && MidVal == 0 && RightVal == 1) {
         bot_right();
-        // todo speed
+        L_Motor.stop();
         Serial.println("slight left");
     } else if (LeftVal == 1 && MidVal == 0 && RightVal == 0) {
         bot_left();
-        // todo speed
+        R_Motor.stop();
         Serial.println("slight right");
+
     } else if (LeftVal == 0 && MidVal == 1 && RightVal == 1) {
         bot_right();
         Serial.println("left");
@@ -180,7 +182,7 @@ enum Tables {
 };
 
 void setup() {
-// Used to display information
+// Used to display information only in debug
 #ifdef DEBUG
     Serial.begin(9600);
 #endif
@@ -208,17 +210,7 @@ void setup() {
     L_Motor.setSpeed(MOTOR_SPEED);
     R_Motor.setSpeed(MOTOR_SPEED);
 }
-void move() {
-    // start 2 1st box
-    // move forward
-    // 1st box to 2nd box
-    // move left
-    // 2nd box to next 3 boxes
-    // check uv
-    // 3 box to next box
-    // move right
-    //
-}
+
 void bot_forward() {
     L_Motor.forward();
     R_Motor.forward();
@@ -240,7 +232,8 @@ void bot_left() {
     R_Motor.forward();
 }
 void loop() {
-    // delay(500);
+    delay(500);
+
     // Reset buzzer and led
     analogWrite(BUZER, 0);
 
@@ -264,18 +257,3 @@ void loop() {
     Serial.println();
     move_bot();
 }
-// void loop() {
-// delay(500);
-
-// Reset buzzer and led
-//  analogWrite(BUZER, 0);
-//  digitalWrite(A0, !LOW);
-//  digitalWrite(A1, !LOW);
-//  digitalWrite(A2, !LOW);
-
-// move_bot();
-
-// if (distance>20){
-
-// }
-// }
