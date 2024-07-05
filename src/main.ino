@@ -10,9 +10,9 @@ const int M_IR = 10;  // mid IR sensor pin
 const int BUZER = 0;
 
 // LED pins
-const int R_LED = 0;  // red led pin
-const int B_LED = 0;  // blue led pin
-const int G_LED = 0;  // green led pin
+const int R_LED = A0;  // red led pin
+const int B_LED = A1;  // blue led pin
+const int G_LED = A2;  // green led pin
 
 // UV pins
 const int ECHO = 12;
@@ -35,6 +35,10 @@ const int MOTOR_SPEED = 70;
 long duration;
 int distance;
 
+int r_count = 0;
+int b_count = 0;
+int g_count = 0;
+
 void get_distance() {
     digitalWrite(TRIG, LOW);
     delayMicroseconds(2);
@@ -50,83 +54,76 @@ void get_distance() {
     Serial.println(" cm");
 }
 void get_block() {
+    // for blue c
+    if (distance <= 10) {
+        digitalWrite(B_LED, LOW);
+        b_count+=1;
+    } else if (distance <= 13) {  // for green b
+        digitalWrite(G_LED, LOW);
+        g_count+=1;
+
+    } else if (distance <= 16) {  // for red
+        digitalWrite(R_LED, LOW);
+        r_count+=1;
+
+    } else {  // vacant
+        digitalWrite(R_LED, HIGH);
+        digitalWrite(G_LED, HIGH);
+        digitalWrite(B_LED, HIGH);
+        //todo buzzer
+    }
 }
 
 void move_bot() {
-    int LeftSensor = digitalRead(L_IR);
+    int LeftVal = digitalRead(L_IR);
     int MidVal = digitalRead(M_IR);
     int RightVal = digitalRead(R_IR);
 
+
+    Serial.print(LeftVal);
+    Serial.print(MidVal);
+    Serial.println(RightVal);
+
     Serial.print("Left val:");
-    Serial.print(LeftSensor?"W":"B");
+    Serial.print(LeftVal ? "W" : "B");
 
     Serial.print(",Mid val:");
-    Serial.print(MidVal?"W":"B");
+    Serial.print(MidVal ? "W" : "B");
 
     Serial.print(",Right val:");
-    Serial.println(RightVal?"W":"B");
+    Serial.println(RightVal ? "W" : "B");
 
-    //  if (LeftSensor == 0 && MidVal == 1 && RightVal == 0) {
-    //     L_Motor.forward();
-    //     R_Motor.forward();
-    //     Serial.println("forward");
-    // }
-    // else if (LeftSensor == 0 && MidVal == 1 && RightVal == 1) {
-    //     L_Motor.backward();
-    //     R_Motor.forward();
-    //     Serial.println("left");
-    // }
-    //     else if (LeftSensor == 0 && MidVal == 0 && RightVal == 1) {
-    //     L_Motor.backward();
-    //     R_Motor.forward();
-    //     Serial.println("left");
-    // }else if (LeftSensor == 1 && MidVal == 1 && RightVal == 0) {
-    //     R_Motor.backward();
-    //     L_Motor.forward();
-    //     Serial.println("right");
-    // }else if (LeftSensor == 0 && MidVal == 0 && RightVal == 0) {
-    //     L_Motor.stop();
-    //     R_Motor.stop();
-    //     Serial.println("stop");
-    // }else if (LeftSensor == 1 && MidVal == 1 && RightVal == 1) {
-    //     L_Motor.stop();
-    //     R_Motor.stop();
-    //     Serial.println("stop");
-    // }
-
-    if (LeftSensor == 1 && MidVal == 0 && RightVal == 1) {
+    if (LeftVal == 1 && MidVal == 0 && RightVal == 1) {
         L_Motor.forward();
         R_Motor.forward();
         Serial.println("forward");
-    } else if (LeftSensor == 0 && MidVal == 1 && RightVal == 0) {
+    } else if (LeftVal == 0 && MidVal == 1 && RightVal == 0) {
         L_Motor.forward();
         R_Motor.forward();
         Serial.println("forward");
-    }
-    
-    else if (LeftSensor == 0 && MidVal == 0 && RightVal == 0) {
+    } else if (LeftVal == 0 && MidVal == 0 && RightVal == 0) {
         L_Motor.stop();
         R_Motor.stop();
         Serial.println("stop");
-    } else if (LeftSensor == 1 && MidVal == 1 && RightVal == 1) {
+    } else if (LeftVal == 1 && MidVal == 1 && RightVal == 1) {
         L_Motor.stop();
         R_Motor.stop();
         Serial.println("stop");
-    } else if (LeftSensor == 0 && MidVal == 0 && RightVal == 1) {
+    } else if (LeftVal == 0 && MidVal == 0 && RightVal == 1) {
         L_Motor.backward();
         R_Motor.forward();
-        //todo speed
+        // todo speed
         Serial.println("slight left");
-    } else if (LeftSensor == 1 && MidVal == 0 && RightVal == 0) {
+    } else if (LeftVal == 1 && MidVal == 0 && RightVal == 0) {
         R_Motor.backward();
         L_Motor.forward();
-                // todo speed
+        // todo speed
         Serial.println("slight right");
-    } else if (LeftSensor == 0 && MidVal == 1 && RightVal == 1) {
+    } else if (LeftVal == 0 && MidVal == 1 && RightVal == 1) {
         L_Motor.backward();
         R_Motor.forward();
         Serial.println("left");
-    } else if (LeftSensor == 1 && MidVal == 1 && RightVal == 0) {
+    } else if (LeftVal == 1 && MidVal == 1 && RightVal == 0) {
         R_Motor.backward();
         L_Motor.forward();
 
@@ -152,27 +149,6 @@ enum Tables {
     T9
 };
 
-enum LED {
-    R,
-    G,
-    B,
-};
-
-// void set_led(bool val,LED l) {}
-//     switch (l) {
-//         case R:
-//             digitalWrite(R_LED, val);
-//             break;
-//         case B:
-//             digitalWrite(B_LED, val);
-//             break;
-//         case G:
-//             digitalWrite(G_LED, val);
-//             break;
-//         default:
-//             break;
-//     }
-// }
 void setup() {
     // Used to display information
     Serial.begin(9600);
@@ -197,11 +173,91 @@ void setup() {
     L_Motor.setSpeed(MOTOR_SPEED);
     R_Motor.setSpeed(MOTOR_SPEED);
 }
+void move() {
+    // start 2 1st box
+    // move forward
+    // 1st box to 2nd box
+    // move left
+    // 2nd box to next 3 boxes
+    // check uv
+    // 3 box to next box
+    // move right
+    //
+}
 void loop() {
-    delay(1000);
+    delay(500);
     move_bot();
-    // get_distance();
+    digitalWrite(A0, !LOW);
+    digitalWrite(A1, !LOW);
+    digitalWrite(A2, !LOW);
+    get_distance();
+    get_block();
     // if (distance>20){
 
     // }
 }
+
+// int Lspeed = 100;
+// int Rspeed = 10;
+// float kLeft = 0.1;
+// float kRight = 0.1;
+
+
+// void loop() {
+
+//     int LEFT_SENSOR = digitalRead(L_IR);
+//     int RIGHT_SENSOR = digitalRead(R_IR);
+
+//     int state;
+
+//     if (LEFT_SENSOR && RIGHT_SENSOR) {
+//         state = 0;  // stop state
+//         L_Motor.stop();
+//         R_Motor.stop();
+//     } else if (LEFT_SENSOR && !RIGHT_SENSOR) {
+//         state = 1;  // turn left state
+//         L_Motor.backward();
+//         R_Motor.forward();
+//     } else if (!LEFT_SENSOR && RIGHT_SENSOR) {
+//         state = 2;  // turn right state
+//         L_Motor.forward();
+//         R_Motor.backward();
+//     } else if (!LEFT_SENSOR && !RIGHT_SENSOR) {
+//         state = 3;  // go state
+//         L_Motor.forward();
+//         R_Motor.forward();
+//     }
+//     int startTime = millis();
+
+//     switch (state) {
+//         case 0:
+
+//             R_Motor.stop();
+//             L_Motor.stop();
+//             break;
+//         case 1:
+//             while (digitalRead(L_IR)) {
+//                 int RnewSpeed = Rspeed + kRight * (millis() - startTime);
+//                 R_Motor.setSpeed(RnewSpeed);
+//                  int LnewSpeed = Lspeed - kLeft * (millis() - startTime);
+//                 L_Motor.setSpeed(LnewSpeed);
+//             }
+//             break;
+//         case 2:
+//             while (digitalRead(R_IR)) {
+//                 int RnewSpeed = Rspeed + kRight * (millis() - startTime);
+//                 R_Motor.setSpeed(RnewSpeed);
+//                 int LnewSpeed = Lspeed - kLeft * (millis() - startTime);
+//                 L_Motor.setSpeed(LnewSpeed);
+//             }
+//             break;
+//         case 3:  // go
+
+//             R_Motor.setSpeed(Rspeed);
+//             L_Motor.setSpeed(Lspeed);
+//             break;
+//         default:
+
+//             break;
+//     }
+// }
